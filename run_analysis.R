@@ -17,12 +17,27 @@ colnames<-tolower(as.vector(features[,2])) #Changes the matrix to a vector with 
 names(complete)<-c(colnames, "activity", "subject", "set") #Names all the variables
 
 subsetdata1<-complete[, c(grep("mean()|std()", colnames), 562:564)] #subsets the variables that have anything to do with deviation or means through the column names and also the ones that provide the ID, activity and set
-subsetdata2<-subsetdata1[, -grep("freq|angle", names(subsetdata1))] #Removes the vairables that deal with meanfrequency and angle whichh are not pertinent to the exercise
+subsetdata2<-subsetdata1[, -grep("freq|angle", names(subsetdata1))] #Removes the variables that deal with meanfrequency and angle which are not pertinent to the exercise
+subsetdata2$activity<-gsub(1, "walking", subsetdata2$activity) #Changes activities to a more descriptive label
+subsetdata2$activity<-gsub(2, "walking upstairs", subsetdata2$activity)
+subsetdata2$activity<-gsub(3, "walking downstairs", subsetdata2$activity)
+subsetdata2$activity<-gsub(4, "sitting", subsetdata2$activity)
+subsetdata2$activity<-gsub(5, "standing", subsetdata2$activity)
+subsetdata2$activity<-gsub(6, "laying", subsetdata2$activity)
 
 
-#Tidy the dataset and go to item 5
-#Then we have to pick between a tall or a wide dataset, the tall one is sub+var as each observation while the wide is subject and each activity variable mean. I prefer wide.
-#Regarless, we can obtain that with table, or split or just use dplyr
 
 
-?read.table
+splitdata<-split(subsetdata2, subsetdata2$subject)#Splits the data by subject for further transformation 
+splitfunct<-function(x) {splitdata2<-split(x, x$activity) #A function to split the data by activity which...
+                    as.data.frame(lapply(splitdata2, function(x) colMeans(x[,1:66])))} 
+newvariables<-lapply(splitdata, splitfunct) #Will be used to split the data of each subject by activity
+tidyup<-function(x) {meanframe<-data.frame() #And then a function to produce an overall data set
+                     framefunc<-function(x) {
+                        loopframe<-t(x)   #Sets the columns as rows, as that was an issue prior
+                        meanframe<-rbind(meanframe, loopframe)}
+tidylist<-lapply(newvariables, FUN = framefunc)
+do.call(rbind, tidylist) #This is particularly important as it properly binds the data as a data frame
+}
+tidyframe<-tidyup(newvariables) #Runs the function
+rownames(tidyframe)<-gsub("\\.", "/", rownames(tidyframe)) #This changes the dot as a backslash but it requires to set . as literal with \\ 
