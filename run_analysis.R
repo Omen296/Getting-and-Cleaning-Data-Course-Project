@@ -24,7 +24,7 @@ subsetdata2$activity<-gsub(3, "walking downstairs", subsetdata2$activity)
 subsetdata2$activity<-gsub(4, "sitting", subsetdata2$activity)
 subsetdata2$activity<-gsub(5, "standing", subsetdata2$activity)
 subsetdata2$activity<-gsub(6, "laying", subsetdata2$activity)
-
+colnames(subsetdata2)<-gsub("\\()", "", colnames(subsetdata2)) #Removes the brackets
 
 
 
@@ -40,4 +40,15 @@ tidylist<-lapply(newvariables, FUN = framefunc)
 do.call(rbind, tidylist) #This is particularly important as it properly binds the data as a data frame
 }
 tidyframe<-tidyup(newvariables) #Runs the function
-rownames(tidyframe)<-gsub("\\.", "/", rownames(tidyframe)) #This changes the dot as a backslash but it requires to set . as literal with \\ 
+
+
+tidyframe$"subject/activity"<-gsub("\\.", "/", rownames(tidyframe)) #This changes the dot as a backslash but it requires to set . as literal with \\ 
+tidyframe2<-tidyframe[,c(67, 1:66)] #Reshapes the data so the rownames become a variable
+
+
+
+
+
+write.table(tidyframe2, "tidyframe.txt", row.names = FALSE,  #Writes the table
+            col.names = TRUE)
+
