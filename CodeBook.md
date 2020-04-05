@@ -76,11 +76,11 @@ rejoined into a broader data set in which each row corresponds to a
 particular subject and activity and most of the columns provide the mean
 of all the observations of that pair.
 
-The end result is a tall data set that follows the principles of
-tidyness in having each row correspond to an observation, each column to
-a variable and the table only refers to the same type of data. The names
-of the variable are also descriptive and the codebook provides an
-account of each variable with this table.
+The end result is a data set that follows the principles of tidyness in
+having each row correspond to an observation, each column to a variable
+and the table only refers to the same type of data. The names of the
+variable are also descriptive and the codebook provides an account of
+each variable with this table.
 
 The resulting table provides the name of each variable, both types of
 variable, which in all cases discounting the subject/activity variable
